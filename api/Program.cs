@@ -1,3 +1,7 @@
+using System.Text;
+using System.IO;
+using System.Linq;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -33,39 +37,58 @@ if (!app.Environment.IsDevelopment())
 }
 
 // Simple test endpoint for Azure Static Web App API redirection
-app.MapGet("/api/test", () =>
+app.MapGet("/api/test", async (HttpContext context) =>
 {
-    return new
+    var req = context.Request;
+
+    // Capture headers
+    var headers = req.Headers.ToDictionary(h => h.Key, h => h.Value.ToString());
+
+    // Capture query params
+    var query = req.Query.ToDictionary(q => q.Key, q => q.Value.ToString());
+
+    // Capture cookies
+    var cookies = req.Cookies.ToDictionary(c => c.Key, c => c.Value);
+
+    // Read body (if any) safely
+    string body = string.Empty;
+    try
     {
-        message = "Hello from ASP.NET 9 API!",
+        req.EnableBuffering();
+        using var reader = new StreamReader(req.Body, Encoding.UTF8, detectEncodingFromByteOrderMarks: false, leaveOpen: true);
+        body = await reader.ReadToEndAsync();
+        req.Body.Position = 0;
+    }
+    catch
+    {
+        body = string.Empty;
+    }
+
+    var info = new
+    {
         timestamp = DateTime.UtcNow,
-        environment = app.Environment.EnvironmentName
+        environment = app.Environment.EnvironmentName,
+        request = new
+        {
+            method = req.Method,
+            scheme = req.Scheme,
+            host = req.Host.Value,
+            path = req.Path.Value,
+            pathBase = req.PathBase.Value,
+            queryString = req.QueryString.Value,
+            protocol = req.Protocol,
+            contentType = req.ContentType,
+            contentLength = req.ContentLength,
+            remoteIp = context.Connection.RemoteIpAddress?.ToString(),
+            headers,
+            query,
+            cookies,
+            body
+        }
     };
+
+    return Results.Json(info);
 })
 .WithName("TestEndpoint");
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/api/weatherforecast", () =>
-{
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
-
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}

@@ -5,7 +5,6 @@ import './App.css'
 
 function App() {
   const [apiResponse, setApiResponse] = useState(null)
-  const [weatherData, setWeatherData] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
@@ -26,22 +25,7 @@ function App() {
     }
   }
 
-  const fetchWeather = async () => {
-    setLoading(true)
-    setError(null)
-    try {
-      const response = await fetch('/api/weatherforecast')
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
-      }
-      const data = await response.json()
-      setWeatherData(data)
-    } catch (err) {
-      setError(err.message)
-    } finally {
-      setLoading(false)
-    }
-  }
+  
 
   return (
     <>
@@ -62,9 +46,7 @@ function App() {
           <button onClick={testApi} disabled={loading}>
             Test API Endpoint
           </button>
-          <button onClick={fetchWeather} disabled={loading} style={{ marginLeft: '10px' }}>
-            Fetch Weather
-          </button>
+          
         </div>
 
         {loading && <p>Loading...</p>}
@@ -77,12 +59,7 @@ function App() {
           </div>
         )}
 
-        {weatherData && (
-          <div className="result-box" style={{ marginTop: '20px', textAlign: 'left' }}>
-            <h3>Weather Forecast:</h3>
-            <pre>{JSON.stringify(weatherData, null, 2)}</pre>
-          </div>
-        )}
+        
       </div>
       <p className="read-the-docs">
         For Azure deployment: React app in Static Web App, API in App Service with Private Endpoint
