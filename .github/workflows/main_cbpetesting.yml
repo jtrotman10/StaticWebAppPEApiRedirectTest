@@ -30,7 +30,7 @@ jobs:
         run: dotnet publish ./api/Api.csproj -c Release -o ./api/publish
 
       - name: Zip publish folder
-        run: zip -r dotnet-app.zip ./api/publish
+        run: zip -r dotnet-app.zip -C ./api/publish .
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
