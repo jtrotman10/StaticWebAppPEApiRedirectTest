@@ -71,14 +71,14 @@ function App() {
         {error && <p style={{ color: 'red' }}>Error: {error}</p>}
         
         {apiResponse && (
-          <div style={{ marginTop: '20px', textAlign: 'left', background: '#1a1a1a', padding: '15px', borderRadius: '8px' }}>
+          <div className="result-box" style={{ marginTop: '20px', textAlign: 'left' }}>
             <h3>API Test Response:</h3>
             <pre>{JSON.stringify(apiResponse, null, 2)}</pre>
           </div>
         )}
 
         {weatherData && (
-          <div style={{ marginTop: '20px', textAlign: 'left', background: '#1a1a1a', padding: '15px', borderRadius: '8px' }}>
+          <div className="result-box" style={{ marginTop: '20px', textAlign: 'left' }}>
             <h3>Weather Forecast:</h3>
             <pre>{JSON.stringify(weatherData, null, 2)}</pre>
           </div>

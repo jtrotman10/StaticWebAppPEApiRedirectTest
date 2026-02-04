@@ -54,6 +54,28 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+/* Result container used for API/weather outputs; ensure high contrast on dark theme */
+.result-box {
+  margin-top: 20px;
+  text-align: left;
+  background: #1a1a1a;
+  padding: 15px;
+  border-radius: 8px;
+  color: #ffffff;
+}
+
+.result-box pre {
+  color: #e6e6e6;
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* Buttons should have readable text in dark mode */
+button {
+  color: #ffffff;
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
@@ -64,5 +86,6 @@ button:focus-visible {
   }
   button {
     background-color: #f9f9f9;
+    color: #213547;
   }
 }
