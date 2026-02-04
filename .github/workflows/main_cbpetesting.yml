@@ -61,5 +61,5 @@ jobs:
         with:
           app-name: 'cbpetesting'
           slot-name: 'Production'
-          package: ./api/publish
+          package: ./.net-app
           
