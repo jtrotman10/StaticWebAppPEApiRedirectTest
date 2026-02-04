@@ -29,11 +29,14 @@ jobs:
       - name: dotnet publish
         run: dotnet publish ./api/Api.csproj -c Release -o ./api/publish
 
+      - name: Zip publish folder
+        run: zip -r dotnet-app.zip ./api/publish
+
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: dotnet-app
-          path: ./api/publish
+          path: dotnet-app.zip
 
   deploy:
     runs-on: ubuntu-latest
@@ -61,5 +64,5 @@ jobs:
         with:
           app-name: 'cbpetesting'
           slot-name: 'Production'
-          package: dotnet-app
+          package: dotnet-app.zip
           
